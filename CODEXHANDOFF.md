@@ -3,7 +3,51 @@
 **Date:** 2026-03-28
 **Previous sessions:** Hızır (bug hunt, March 26) → CoWork Claude (20hr marathon, March 27-28)
 **Workspace:** `/Users/redperson/redcoreECO`
-**HEAD:** `9f55d4b` (fix: cloud-api security hardening)
+**HEAD:** `578fef3` (fix: P0-P2 bug fixes — webhook revenue, FK violations, auth, field mismatches)
+**Pushed:** ✅ `main` → `origin/main`
+
+---
+
+## HIZIR SESSION FIXES (2026-03-28, commit `578fef3`)
+
+| # | ID | Fix | Status |
+|---|-----|-----|--------|
+| 1 | **CRIT-1** | Stripe webhook userId fallback: session → subscription → customer DB lookup | ✅ FIXED |
+| 2 | **OS-CRIT-1** | FK violation: nullable assessment_id/classification_id in SQLite schema + Rust code | ✅ FIXED |
+| 3 | **HIGH-1** | cloud-api client `/auth/me` → `/users/me` | ✅ FIXED |
+| 4 | **HIGH-2** | tuning-service `journal.resume` unwrap → proper error handling | ✅ FIXED |
+| 5 | **HIGH-4** | Registration atomic: user + subscription + preferences in DB transaction | ✅ FIXED |
+| 6 | **HIGH-5** | Subscription query `.orderBy(desc(updatedAt))` | ✅ ALREADY FIXED (CoWork) |
+| 7 | **HIGH-7** | Deleted users auth check (`deletedAt IS NOT NULL` → 401) | ✅ ALREADY FIXED (CoWork) |
+| 8 | **HIGH-8** | `UserProfile.tier` + `SubscriptionDetails.tier` now include `"expert"` | ✅ FIXED |
+| 9 | **HIGH-9** | `warningNotes` → `warnings` in TS schema to match Rust output | ✅ FIXED |
+| 10 | **MED-11** | Zustand anti-pattern `isPremium()()` → inline selector | ✅ FIXED |
+| 11 | **SEC-1** | JWT_SECRET validation (throws if missing/short) | ✅ ALREADY FIXED (CoWork) |
+| 12 | **SEC-4** | Startup env validation for JWT_SECRET + DATABASE_URL | ✅ FIXED |
+| 13 | INFRA | cloud-api added to PM2 ecosystem (port 3003) | ✅ FIXED |
+| 14 | INFRA | cloud-api added to deploy.sh + Caddy config | ✅ FIXED |
+| 15 | DOCS | CODEXHANDOFF updated with full post-CoWork analysis | ✅ DONE |
+
+### Still Open (Needs Rust/Infra Work)
+
+| ID | Issue | Why Deferred |
+|----|-------|-------------|
+| CRIT-3 | 13 tuning-service IPC methods unimplemented | Rust implementation needed per-method |
+| OS-HIGH-3 | `execute_elevated` not wired | Rust + Windows API work |
+| OS-HIGH-4 | 11 OS IPC methods "Unknown method" | Rust implementation needed |
+| HIGH-10 | Triple classification on single click | Rust IPC handler debounce |
+| OS-CRIT-3 | CI TEST 4 `$allPassed` | Was already fixed in current CI |
+
+### VDS Deployment Status
+
+**Pushed to GitHub:** ✅ `578fef3` on `main`
+**VDS deploy:** Pending DNS setup + SSH access. Run:
+```bash
+ssh ubuntu@<VDS_IP>
+sudo bash scripts/vds-setup.sh    # First time only
+cd /home/ubuntu/redcoreECO && bash scripts/deploy.sh
+```
+**DNS needed:** `api.redcore-tuning.com` → VDS IP (for cloud-api)
 
 ---
 
