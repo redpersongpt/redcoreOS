@@ -1,65 +1,166 @@
 <p align="center">
-  <img src="apps/web/public/icon.svg" width="80" alt="oudenOS" />
-</p>
-
-<h1 align="center">oudenOS</h1>
-
-<p align="center">
-  <a href="https://github.com/redpersongpt/oudenOS/releases/latest"><img src="https://img.shields.io/github/v/release/redpersongpt/oudenOS?style=flat-square&color=000000&labelColor=000000" alt="Release" /></a>
-  <a href="https://github.com/redpersongpt/oudenOS/blob/main/LICENSE"><img src="https://img.shields.io/github/license/redpersongpt/oudenOS?style=flat-square&color=000000&labelColor=000000" alt="License" /></a>
-  <a href="https://ouden.cc"><img src="https://img.shields.io/badge/ouden.cc-website-000000?style=flat-square&labelColor=000000" alt="Website" /></a>
+  <img src="og-image.png" alt="oudenOS" width="700" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/redpersongpt/oudenOS/raw/main/docs/demo.gif" alt="oudenOS demo" width="720" />
+  <a href="https://ouden.cc"><img src="https://img.shields.io/badge/ouden.cc-E8E8E8?style=for-the-badge&logoColor=000000" alt="Website" /></a>
+  <a href="https://github.com/redpersongpt/oudenOS/releases/latest"><img src="https://img.shields.io/github/v/release/redpersongpt/oudenOS?style=for-the-badge&color=E8E8E8&labelColor=111111" alt="Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/redpersongpt/oudenOS?style=for-the-badge&color=E8E8E8&labelColor=111111" alt="License" /></a>
+</p>
+
+<p align="center">
+  <img src="docs/demo.gif" alt="oudenOS demo" width="680" />
 </p>
 
 ---
 
-## What Is This
+## What this is
 
-You spend $2000 on a laptop. You open it up. Microsoft has already installed Candy Crush, pinned Bing to your search bar, and is reporting your keystrokes to a telemetry server in Redmond. Edge is begging to be your default browser. There's a weather widget you didn't ask for. Xbox Game Bar is running in the background on a machine that's never seen a controller.
+A 5MB tool that does what you'd spend 4 hours doing manually in regedit — except it won't brick your install because it actually knows what your hardware is before changing anything.
 
-Every "debloat guide" on Reddit tells you to paste a PowerShell one-liner from some random gist, pray it doesn't break Windows Update, and then reinstall when your Start Menu stops working two weeks later.
+Scans your machine. Classifies it. Shows you the full list. You pick what stays and what goes. Restore point before every change. Done.
 
-oudenOS is not that.
+No account. No internet required. No background process. Closes when you close it.
 
-It's a proper desktop wizard. It scans your hardware, figures out what you're running, and walks you through **63 specific questions** before it touches a single registry key. Every change gets snapshotted. You can undo everything. Nothing happens without you seeing exactly what it's going to do first.
+## What it actually changes
 
-## How It Works
+<details>
+<summary><b>Privacy</b> — Windows ships with 70+ telemetry endpoints enabled by default</summary>
 
-1. **Scan** — Detects your CPU, GPU, RAM, disk, and every background service Microsoft is running behind your back
-2. **Profile** — Matches you to a hardware profile (gaming desktop, office laptop, work PC, VM, low-spec) so you don't accidentally nuke laptop battery management on a desktop
-3. **Questionnaire** — 63 questions across 7 categories. You pick exactly what changes. Nothing is on by default without your say
-4. **Review** — Every registry key, every service, every scheduled task. No surprises
-5. **Apply** — Runs the changes with rollback snapshots saved to disk
-6. **Done** — Your PC boots faster, runs quieter, and stopped phoning home to Microsoft
+- Disables DiagTrack, dmwappushservice, Connected User Experiences
+- Removes Copilot, Recall, activity history, clipboard cloud sync
+- Blocks ~70 known telemetry hostnames via hosts file
+- Disables advertising ID, location tracking, speech data collection
+- Removes Start menu "suggestions" (they're ads)
 
-## Features
+Registry keys under `HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection`. [See the playbooks.](playbooks/privacy)
+</details>
 
-- **63 questions across 7 categories** — Essentials, Privacy, Performance, Shell, Networking, Security, and a preset selector
-- **Hardware detection** — Gaming desktop, office laptop, work PC, VM, low-spec. Your plan is built for YOUR machine
-- **200+ playbook actions** — Registry tweaks, service toggles, scheduled task removal, AppX cleanup, power plans
-- **Full rollback** — Every change is snapshotted before it runs. Undo anything
-- **Work PC safe** — Print Spooler, RDP, SMB, Group Policy, VPN all protected by default. We're not breaking your IT setup
-- **Win11 + Win10 22H2**
-- **Free. Open source. No paywalls.** This isn't a SaaS with a free tier
+<details>
+<summary><b>Performance</b> — the stuff that actually matters</summary>
 
-## The Research
+- Timer resolution → 0.5ms (your system runs at 15.6ms by default)
+- Core parking disabled — Windows parks cores for "power savings" on desktops plugged into a wall
+- MMCSS configured for multimedia/gaming thread priority
+- NDU memory leak fixed — a known Windows bug Microsoft hasn't patched since 2018
 
-Unlike the Reddit crowd copy-pasting registry hacks from 2019 forum posts, every tweak in oudenOS is backed by actual benchmarks and real-world testing from two repos:
+`HKLM\SYSTEM\CurrentControlSet`. Standard registry edits.
+</details>
 
-- **[valleyofdoom/PC-Tuning](https://github.com/valleyofdoom/PC-Tuning)** — The benchmark-first optimization guide. Every single tweak gets tested with real frametime data, not vibes. If it doesn't have a measurable effect, it's not in here
-- **[ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/winutil)** — Battle-tested by millions of users daily. Half the toggles in oudenOS exist because Chris proved they work at scale
+<details>
+<summary><b>Gaming</b> — Game Bar is recording your screen right now</summary>
 
-Every toggle maps to a real registry path, a real service, a real scheduled task. No placebo tweaks. No "disable Superfetch for faster boot" nonsense that stopped being true in 2018.
+- Game DVR/Game Bar background recording → off (yes, it's on by default, yes it uses GPU resources)
+- Legacy flip model for DirectX
+- GPU telemetry blocked
+- HAGS control — depends on your GPU
+
+None of this is controversial. The difference is this tool checks your hardware first instead of blindly applying everything.
+</details>
+
+<details>
+<summary><b>Services</b> — Windows runs 280+ services. You need about 60.</summary>
+
+Disables things like:
+- `DiagTrack` — telemetry collector
+- `dmwappushservice` — WAP push routing
+- `WSearch` — indexer that thrashes your disk for Cortana
+- `MapsBroker` — offline maps for your desktop
+- `RetailDemo` — turns your PC into a Best Buy display
+
+Work PC profiles keep Print Spooler, RDP, SMB, Group Policy, VPN running. Task Manager, Explorer, and critical system services are protected — they can never be disabled.
+</details>
+
+<details>
+<summary><b>Shell</b> — the visual garbage</summary>
+
+- Start menu ads → gone
+- Widgets panel → hidden
+- Taskbar: Chat, News, Search highlights → removed
+- Optional: dark mode, accent color, wallpaper
+</details>
+
+<details>
+<summary><b>Network</b> — Nagle's algorithm is still enabled by default</summary>
+
+- Nagle disabled — buffers packets "for efficiency." Great for 1984. Bad for gaming in 2026
+- QoS adjusted
+- TCP/UDP offloading control
+- Network throttling index disabled
+</details>
+
+<details>
+<summary><b>Security</b> — expert only, locked by default</summary>
+
+- VBS/HVCI control (costs 5-15% CPU on some systems)
+- Defender management (Tamper Protection detected → skips cleanly)
+- CPU mitigations toggle (Spectre/Meltdown patches — 2-8% performance cost)
+
+Behind an expert gate for a reason.
+</details>
+
+## What it does NOT do
+
+- Modify system files or DLLs
+- Break Explorer or Task Manager (ever)
+- Install drivers
+- Touch your documents, apps, or games
+- Require internet
+- Collect any data whatsoever
+- Run in the background
+- Ask you to create an account
+
+## How it works
+
+```
+SCAN      → reads your hardware, services, startup items
+CLASSIFY  → gaming PC, work laptop, VM, etc.
+PLAN      → builds an action list for YOUR machine
+EXECUTE   → applies changes one by one, restore point first
+VALIDATE  → confirms what changed, generates a report
+```
+
+Built with Tauri (Rust backend, React frontend). 5MB installer. The privileged Rust service does the actual system modifications — the UI is just a wizard.
+
+## 8 Profiles
+
+| Profile | Protects | Aggression |
+|---------|----------|------------|
+| Gaming Desktop | GPU services, DirectX | Full cleanup |
+| Work PC | Print, RDP, SMB, VPN, Group Policy | Conservative |
+| Workstation | Pro tools, Hyper-V | Moderate |
+| Office Laptop | Battery, WiFi | Moderate + power |
+| Gaming Laptop | GPU + battery balance | Moderate |
+| Low-spec | Nothing | Maximum cleanup |
+| VM | Everything | Telemetry only |
+| Budget Desktop | Essential drivers | Aggressive cleanup |
+
+## Research
+
+Every tweak is backed by benchmarks, not vibes:
+
+- **[valleyofdoom/PC-Tuning](https://github.com/valleyofdoom/PC-Tuning)** — benchmark-first optimization. If it doesn't have a measurable effect, it's not here
+- **[ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/winutil)** — battle-tested by millions of users daily
+
+Every toggle maps to a real registry path, a real service, a real scheduled task.
+
+## Requirements
+
+- Windows 10 (21H2+) or Windows 11
+- x64, admin, 500 MB free
+- [Visual C++ Runtime](https://aka.ms/vs/17/release/vc_redist.x64.exe) (most PCs already have it)
+
+## Download
+
+**[Latest release](https://github.com/redpersongpt/oudenOS/releases/latest)**
+
+No code signing yet. SmartScreen will flag it. Right-click → Properties → Unblock.
 
 ## Links
 
-- [GitHub](https://github.com/redpersongpt/oudenOS) — Star if this saved you from doing a clean reinstall
-- [YouTube](https://www.youtube.com/@redpersonn) — Subscribe for more
 - [ouden.cc](https://ouden.cc)
+- [YouTube](https://www.youtube.com/@redpersonn)
 
 ## License
 
-MIT
+GPL-3.0
