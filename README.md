@@ -1,15 +1,11 @@
 <p align="center">
-  <img src="og-image.png" alt="oudenOS" width="700" />
+  <img src="og-image.png" alt="oudenOS" width="480" />
 </p>
 
 <p align="center">
   <a href="https://ouden.cc"><img src="https://img.shields.io/badge/ouden.cc-E8E8E8?style=for-the-badge&logoColor=000000" alt="Website" /></a>
   <a href="https://github.com/redpersongpt/oudenOS/releases/latest"><img src="https://img.shields.io/github/v/release/redpersongpt/oudenOS?style=for-the-badge&color=E8E8E8&labelColor=111111" alt="Release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/redpersongpt/oudenOS?style=for-the-badge&color=E8E8E8&labelColor=111111" alt="License" /></a>
-</p>
-
-<p align="center">
-  <img src="docs/demo.gif" alt="oudenOS demo" width="680" />
 </p>
 
 ---
@@ -111,6 +107,10 @@ Behind an expert gate for a reason.
 - Ask you to create an account
 
 ## How it works
+
+<p align="center">
+  <img src="docs/demo.gif" alt="oudenOS demo" width="420" />
+</p>
 
 ```
 SCAN      → reads your hardware, services, startup items
