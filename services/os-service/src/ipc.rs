@@ -361,10 +361,9 @@ async fn dispatch(db: &Database, req: &RpcRequest, start_time: Instant) -> RpcRe
                 );
             }
 
-            // Look up action data from params or embedded definitions
-            let action_data = if let Some(data) = params.get("actionData") {
-                data.clone()
-            } else {
+            // SECURITY: Never accept actionData directly from the renderer.
+            // Always resolve from playbook definitions to prevent injection.
+            let action_data = {
                 let playbook_dir =
                     resolve_playbook_dir().unwrap_or_else(playbook::default_playbook_dir);
                 let playbook_lookup = playbook::find_action_definition(&playbook_dir, action_id);
